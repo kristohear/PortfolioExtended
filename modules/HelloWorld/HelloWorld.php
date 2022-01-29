@@ -447,7 +447,7 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                     'option_category'  => 'configuration',
                 ),
                 'show_more'                     => array(
-                    'label'            => esc_html__( 'Show Read More Text', 'et_builder' ),
+                    'label'            => esc_html__( 'Show Read More Button', 'et_builder' ),
                     'type'             => 'yes_no_button',
                     'option_category'  => 'configuration',
                     'options'          => array(
@@ -463,34 +463,6 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                     'default_on_front' => 'off',
                     'mobile_options'   => true,
                     'hover'            => 'tabs',
-                ),
-                'show_button'                   => array(
-                    'label'            => esc_html__( 'Show Read More Button', 'et_builder' ),
-                    'type'             => 'yes_no_button',
-                    'option_category'  => 'configuration',
-                    'options'          => array(
-                        'off' => et_builder_i18n( 'No' ),
-                        'on'  => et_builder_i18n( 'Yes' ),
-                    ),
-                    'depends_show_if'  => 'off',
-                    'description'      => esc_html__( 'Here you can define whether to show button after the excerpts or not.', 'et_builder' ),
-                    'computed_affects' => array(
-                        '__posts',
-                    ),
-                    'toggle_slug'      => 'elements',
-                    'default_on_front' => 'off',
-                    'mobile_options'   => true,
-                    'hover'            => 'tabs',
-                ),
-                'button_text'    => array(
-                    'label'           => et_builder_i18n( 'Button' ),
-                    'type'            => 'text',
-                    'option_category' => 'basic_option',
-                    'description'     => esc_html__( 'Input your desired button text, or leave blank for no button.', 'et_builder' ),
-                    'toggle_slug'     => 'main_content',
-                    'dynamic_content' => 'text',
-                    'mobile_options'  => true,
-                    'hover'           => 'tabs',
                 ),
                 'show_author'                   => array(
                     'label'            => esc_html__( 'Show Author', 'et_builder' ),
@@ -690,8 +662,6 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                         'show_thumbnail',
                         'show_content',
                         'show_more',
-                        'show_button',
-                        'button_text',
                         'show_author',
                         'show_date',
                         'show_categories',
@@ -786,9 +756,6 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                 'show_pagination'               => '',
                 'background_layout'             => '',
                 'show_more'                     => '',
-                'show_button'                   => '',
-                'button_text'                   => '',
-                'custom_button'                 => '',
                 'offset_number'                 => '',
                 'masonry_tile_background_color' => '',
                 'overlay_icon_color'            => '',
@@ -1273,17 +1240,9 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
             $excerpt_length     = $this->props['excerpt_length'];
             $show_pagination    = $this->props['show_pagination'];
             $show_more          = $this->props['show_more'];
-            $show_button        = $this->props['show_button'];
-            $button_text        = $this->_esc_attr( 'button_text', 'limited' );
-            $button_custom      = $this->props['custom_button'];
             $offset_number      = $this->props['offset_number'];
             $use_overlay        = $this->props['use_overlay'];
             $header_level       = $this->props['header_level'];
-
-            $custom_icon_values = et_pb_responsive_options()->get_property_values( $this->props, 'button_icon' );
-		    $custom_icon        = isset( $custom_icon_values['desktop'] ) ? $custom_icon_values['desktop'] : '';
-		    $custom_icon_tablet = isset( $custom_icon_values['tablet'] ) ? $custom_icon_values['tablet'] : '';
-		    $custom_icon_phone  = isset( $custom_icon_values['phone'] ) ? $custom_icon_values['phone'] : '';
 
             $background_layout               = $this->props['background_layout'];
             $background_layout_hover         = et_pb_hover_options()->get_value( 'background_layout', $this->props, 'light' );
@@ -1685,34 +1644,7 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                             )
                         );
 
-                        // Render button
-		                $button = $this->render_button(
-			                array(
-				                'button_classname'    => array( 'et_pb_promo_button' ),
-				                'button_custom'       => $button_custom,
-				                'button_rel'          => $button_text,
-				                'button_text'         => $button_text,
-				                'button_text_escaped' => true,
-				                'button_url'          => esc_url( get_permalink() ),
-				                'custom_icon'         => $custom_icon,
-				                'custom_icon_tablet'  => $custom_icon_tablet,
-				                'custom_icon_phone'   => $custom_icon_phone,
-				                'url_new_window'      => false,
-				                'display_button'      => $multi_view->has_value( 'button_text' ),
-				                'multi_view_data'     => $multi_view->render_attrs(
-					                array(
-						                'content'    => '{{button_text}}',
-						                'visibility' => array(
-							                'button_text' => '__not_empty',
-							                'button_url'  => '__not_empty',
-						                ),
-					                )
-				                ),
-			                )
-		                );
-
                         echo et_core_esc_previously( $more );
-                        echo et_core_esc_previously( $button );
 
                         echo '</div>';
                         ?>
