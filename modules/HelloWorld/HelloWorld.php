@@ -1361,7 +1361,7 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
                                                  );
             }
             
-            //return sprintf( '<h1>Hello world!!!</h1>');
+            
             $args['paged'] = $et_paged;
 
             if ( '' !== $offset_number && ! empty( $offset_number ) ) {
