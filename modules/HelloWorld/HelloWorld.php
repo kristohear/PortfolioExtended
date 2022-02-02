@@ -1973,6 +1973,5 @@ class MYEX_HelloWorld extends ET_Builder_Module_Type_PostBased {
         }
     }
 
-    if ( et_builder_should_load_all_module_data() ) {
-        new MYEX_HelloWorld();
-    }
+    new MYEX_HelloWorld();
+    
