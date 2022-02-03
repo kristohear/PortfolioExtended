@@ -89,14 +89,6 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 						'hover'        => "{$this->main_css_element}:hover .post-meta, {$this->main_css_element}:hover .post-meta a, {$this->main_css_element}:hover .post-meta span",
 					),
 				),
-				'read_more'  => array(
-					'label'           => esc_html__( 'Read More', 'et_builder' ),
-					'css'             => array(
-						'main'  => "{$this->main_css_element} div.post-content a.more-link",
-						'hover' => "{$this->main_css_element} div.post-content a.more-link:hover",
-					),
-					'hide_text_align' => true,
-				),
 				'pagination' => array(
 					'label'           => esc_html__( 'Pagination', 'et_builder' ),
 					'css'             => array(
@@ -195,6 +187,28 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 					'important' => array( 'custom_margin' ),
 				),
 			),
+            'button'         => array(
+                'button' => array(
+                    'label'          => et_builder_i18n( 'Button' ),
+                    'css'            => array(
+                        'main'         => "{$this->main_css_element} .et_pb_promo_button.et_pb_button",
+                        'limited_main' => "{$this->main_css_element} .et_pb_promo_button.et_pb_button",
+                        'alignment'    => "{$this->main_css_element} .et_pb_button_wrapper",
+                    ),
+                    'use_alignment'  => true,
+                    'box_shadow'     => array(
+                        'css' => array(
+                            'main' => '%%order_class%% .et_pb_button',
+                        ),
+                    ),
+                    'margin_padding' => array(
+                        'css' => array(
+                            'main'      => "{$this->main_css_element} .et_pb_button_wrapper .et_pb_promo_button.et_pb_button",
+                            'important' => 'all',
+                        ),
+                    ),
+                ),
+            ),
 			'text'           => array(
 				'use_background_layout' => true,
 				'css'                   => array(
@@ -232,7 +246,6 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 			'scroll_effects' => array(
 				'grid_support' => 'yes',
 			),
-			'button'         => false,
 		);
 
 		$this->custom_css_fields = array(
@@ -256,9 +269,10 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 				'label'    => esc_html__( 'Featured Image', 'et_builder' ),
 				'selector' => '.entry-featured-image-url img',
 			),
-			'read_more'      => array(
-				'label'    => esc_html__( 'Read More Button', 'et_builder' ),
-				'selector' => 'a.more-link',
+			'button'      => array(
+				'label'     => esc_html__( 'Promo Button', 'et_builder' ),
+				'selector'  => '.et_pb_promo .et_pb_button.et_pb_promo_button',
+				'no_space_before_selector' => true,
 			),
 		);
 
@@ -403,7 +417,7 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 					'on'  => esc_html__( 'Show Content', 'et_builder' ),
 				),
 				'affects'          => array(
-					'show_more',
+					//'show_more',
 					'show_excerpt',
 					'use_manual_excerpt',
 					'excerpt_length',
@@ -445,23 +459,15 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 				'toggle_slug'      => 'main_content',
 				'option_category'  => 'configuration',
 			),
-			'show_more'                     => array(
-				'label'            => esc_html__( 'Show Read More Button', 'et_builder' ),
-				'type'             => 'yes_no_button',
-				'option_category'  => 'configuration',
-				'options'          => array(
-					'off' => et_builder_i18n( 'No' ),
-					'on'  => et_builder_i18n( 'Yes' ),
-				),
-				'depends_show_if'  => 'off',
-				'description'      => esc_html__( 'Here you can define whether to show "read more" link after the excerpts or not.', 'et_builder' ),
-				'computed_affects' => array(
-					'__posts',
-				),
-				'toggle_slug'      => 'elements',
-				'default_on_front' => 'off',
-				'mobile_options'   => true,
-				'hover'            => 'tabs',
+            'button_text'    => array(
+				'label'           => et_builder_i18n( 'Button' ),
+				'type'            => 'text',
+				'option_category' => 'basic_option',
+				'description'     => esc_html__( 'Input your desired button text, or leave blank for no button.', 'et_builder' ),
+				'toggle_slug'     => 'main_content',
+				'dynamic_content' => 'text',
+				'mobile_options'  => true,
+				'hover'           => 'tabs',
 			),
 			'show_author'                   => array(
 				'label'            => esc_html__( 'Show Author', 'et_builder' ),
@@ -660,7 +666,6 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 					'meta_date',
 					'show_thumbnail',
 					'show_content',
-					'show_more',
 					'show_author',
 					'show_date',
 					'show_categories',
@@ -754,7 +759,6 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 			'excerpt_length'                => '',
 			'show_pagination'               => '',
 			'background_layout'             => '',
-			'show_more'                     => '',
 			'offset_number'                 => '',
 			'masonry_tile_background_color' => '',
 			'overlay_icon_color'            => '',
@@ -1098,8 +1102,10 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 							}
 
 							if ( 'on' !== $args['show_content'] ) {
+                                /*
 								$more = 'on' === $args['show_more'] ? sprintf( ' <a href="%1$s" class="more-link" >%2$s</a>', esc_url( get_permalink() ), esc_html__( 'read more', 'et_builder' ) ) : ''; //phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited
 								echo et_core_esc_previously( $more );
+                                */
 							}
 
 								echo '</div>';
@@ -1256,7 +1262,8 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 		$use_manual_excerpt = $this->props['use_manual_excerpt'];
 		$excerpt_length     = $this->props['excerpt_length'];
 		$show_pagination    = $this->props['show_pagination'];
-		$show_more          = $this->props['show_more'];
+        $button_text        = $this->_esc_attr( 'button_text', 'limited' );
+        $button_custom      = $this->props['custom_button'];
 		$offset_number      = $this->props['offset_number'];
 		$use_overlay        = $this->props['use_overlay'];
 		$header_level       = $this->props['header_level'];
@@ -1273,6 +1280,11 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 		$hover_icon_tablet = isset( $hover_icon_values['tablet'] ) ? $hover_icon_values['tablet'] : '';
 		$hover_icon_phone  = isset( $hover_icon_values['phone'] ) ? $hover_icon_values['phone'] : '';
 		$hover_icon_sticky = $sticky->get_value( 'hover_icon', $this->props );
+
+        $custom_icon_values = et_pb_responsive_options()->get_property_values( $this->props, 'button_icon' );
+		$custom_icon        = isset( $custom_icon_values['desktop'] ) ? $custom_icon_values['desktop'] : '';
+		$custom_icon_tablet = isset( $custom_icon_values['tablet'] ) ? $custom_icon_values['tablet'] : '';
+		$custom_icon_phone  = isset( $custom_icon_values['phone'] ) ? $custom_icon_values['phone'] : '';
 
 		$video_background          = $this->video_background();
 		$parallax_image_background = $this->get_parallax_image_background();
@@ -1658,27 +1670,33 @@ class BA_Module_PortfolioExtended extends ET_Builder_Module_Type_PostBased {
 						true
 					);
 
-					$more = $multi_view->render_element(
-						array(
-							'tag'            => 'a',
-							'content'        => esc_html__( 'read more', 'et_builder' ),
-							'attrs'          => array(
-								'class' => 'more-link',
-								'href'  => esc_url( get_permalink() ),
-							),
-							'visibility'     => array(
-								'show_content' => 'off',
-								'show_more'    => 'on',
-							),
-							'required'       => array(
-								'show_content' => 'off',
-								'show_more'    => 'on',
-							),
-							'hover_selector' => '%%order_class%% .et_pb_post',
-						)
-					);
-
-					echo et_core_esc_previously( $more );
+                    // Render button
+		$button = $this->render_button(
+			array(
+				'button_classname'    => array( 'et_pb_promo_button' ),
+				'button_custom'       => $button_custom,
+				'button_rel'          => 'button_rel',
+				'button_text'         => $button_text,
+				'button_text_escaped' => true,
+				'button_url'          => '',
+				'custom_icon'         => $custom_icon,
+				'custom_icon_tablet'  => $custom_icon_tablet,
+				'custom_icon_phone'   => $custom_icon_phone,
+				'url_new_window'      => false,
+				'display_button'      => ( $multi_view->has_value( 'button_text' ) ),
+				'multi_view_data'     => $multi_view->render_attrs(
+					array(
+						'content'    => '{{button_text}}',
+						'visibility' => array(
+							'button_text' => '__not_empty',
+							'button_url'  => '__not_empty',
+						),
+					)
+				),
+			)
+		);
+                    
+                    echo et_core_esc_previously( $button );
 
 					echo '</div>';
 					?>
